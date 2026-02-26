@@ -1,0 +1,145 @@
+# NYC Taxi Data Quiz Answers
+
+## 📄 Question 1: File Size
+
+**Answer:** `128.3 MiB`
+
+**Method:** Used Kestra task to check file size
+
+```yaml
+- id: simple_file_size_check
+  type: io.kestra.plugin.scripts.shell.Commands
+  taskRunner:
+    type: io.kestra.plugin.core.runner.Process
+  commands:
+    - |
+      echo "Checking file size..."
+      FILE="/tmp/yellow_tripdata_2020-12.csv"
+      
+      if [ -f "$FILE" ]; then
+        SIZE_BYTES=$(wc -c < "$FILE")
+        SIZE_MB=$((SIZE_BYTES / 1024 / 1024))
+        echo "SUCCESS: File size calculated"
+        echo "File: $FILE"
+        echo "Size in bytes: $SIZE_BYTES"
+        echo "Size in MB: $SIZE_MB"
+        echo "Size in GB: $((SIZE_BYTES / 1024 / 1024 / 1024))"
+        ls -lh "$FILE"
+      else
+        echo "ERROR: File not found at $FILE"
+        echo "Trying to find it..."
+        find /tmp -name "*yellow*" -type f 2>/dev/null | head -5
+      fi
+```
+
+---
+
+## 📝 Question 2: File Name
+
+**Answer:** `green_tripdata_2020-04.csv`
+
+**Explanation:** This filename combines all the required components:
+- **green** - taxi type
+- **tripdata** - dataset identifier
+- **2020** - year
+- **04** - month (April)
+- **.csv** - file format
+
+---
+
+## 🚖 Question 3: Yellow Taxi 2020 Total
+
+**Question:** How many Yellow Taxi trips happened in all of 2020?
+
+**Answer:** `24,648,499 trips`
+
+**Method:** Python script using pandas to aggregate all months
+
+```python
+import pandas as pd
+
+total = sum(
+    len(pd.read_parquet(
+        f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2020-{m:02d}.parquet"
+    )) 
+    for m in range(1, 13)
+)
+
+print(f"Total rows: {total:,}")
+```
+
+---
+
+## 🚗 Question 4: Green Taxi 2020 Total
+
+**Question:** How many Green Taxi trips happened in all of 2020?
+
+**Answer:** `1,734,051 trips`
+
+**Method:** Same approach as Question 3, but for green taxis
+
+```python
+import pandas as pd
+
+total = sum(
+    len(pd.read_parquet(
+        f"https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2020-{m:02d}.parquet"
+    )) 
+    for m in range(1, 13)
+)
+
+print(f"Total rows: {total:,}")
+```
+
+---
+
+## 📅 Question 5: March 2021 Yellow Taxi
+
+**Question:** How many Yellow Taxi trips happened in March 2021?
+
+**Answer:** `1,925,152 trips`
+
+**Method:** DuckDB query on March 2021 parquet file
+
+```python
+import duckdb
+
+url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-03.parquet"
+count = duckdb.sql(f"SELECT COUNT(*) FROM read_parquet('{url}')").fetchone()[0]
+
+print(f"March 2021 had {count:,} yellow taxi trips")
+```
+
+---
+
+## ⏰ Question 6: Kestra Timezone
+
+**Question:** How do you set New York time in Kestra?
+
+**Answer:** `timezone: "America/New_York"`
+
+**Explanation:** Kestra requires the full IANA timezone identifier (like `America/New_York`), not abbreviated codes like EST or EDT. This ensures automatic adjustment for daylight saving time transitions.
+
+**Example usage:**
+```yaml
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 * * *"
+    timezone: "America/New_York"
+```
+
+---
+
+## 📊 Summary
+
+| Question | Answer | Method |
+|----------|--------|--------|
+| File Size | 128.3 MiB | Kestra task |
+| File Name | green_tripdata_2020-04.csv | Pattern matching |
+| Yellow 2020 Total | 24,648,499 trips | Pandas aggregation |
+| Green 2020 Total | 1,734,051 trips | Pandas aggregation |
+| Yellow March 2021 | 1,925,152 trips | DuckDB query |
+| Kestra Timezone | America/New_York | Configuration |
+
+---

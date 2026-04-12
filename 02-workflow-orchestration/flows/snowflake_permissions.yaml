@@ -1,0 +1,21 @@
+id: 06_snowflake_permissions
+namespace: zoomcamp
+
+tasks:
+  # Grant ownership of ZOOMCAMP database to your user
+  - id: grant_database_ownership
+    type: io.kestra.plugin.jdbc.snowflake.Query
+    url: "jdbc:snowflake://qa76796.me-central-1.aws.snowflakecomputing.com/?warehouse=COMPUTE_WH&role=ACCOUNTADMIN"
+    username: "{{ secret('SNOWFLAKE_USERNAME') }}"
+    password: "{{ secret('SNOWFLAKE_PASSWORD') }}"
+    sql: |
+      GRANT OWNERSHIP ON DATABASE ZOOMCAMP TO ROLE SYSADMIN
+
+  # Or create the database as ACCOUNTADMIN if it doesn't exist
+  - id: create_database_as_admin
+    type: io.kestra.plugin.jdbc.snowflake.Query
+    url: "jdbc:snowflake://qa76796.me-central-1.aws.snowflakecomputing.com/?warehouse=COMPUTE_WH&role=ACCOUNTADMIN"
+    username: "{{ secret('SNOWFLAKE_USERNAME') }}"
+    password: "{{ secret('SNOWFLAKE_PASSWORD') }}"
+    sql: |
+      CREATE DATABASE IF NOT EXISTS ZOOMCAMP

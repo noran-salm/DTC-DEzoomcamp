@@ -1,0 +1,8 @@
+Installing dbt project and profile setup
+Info Created .vscode/extensions.json with dbt extension recommendation
+Success Project created successfully!
+Info Project name: nyt_analytics
+Info Project directory: nyt_analytics
+
+==================== Execution Summary =====================
+Finished 'init' successfully [694ms]

@@ -1,0 +1,31 @@
+id: 07_snowflake_setup
+namespace: zoomcamp
+
+tasks:
+  # 1. Create Warehouse
+  - id: create_warehouse
+    type: io.kestra.plugin.jdbc.snowflake.Query
+    url: "jdbc:snowflake://qa76796.me-central-1.aws.snowflakecomputing.com/"
+    username: "{{ secret('SNOWFLAKE_USERNAME') }}"
+    password: "{{ secret('SNOWFLAKE_PASSWORD') }}"
+    sql: |
+      CREATE WAREHOUSE IF NOT EXISTS {{ kv('SF_WAREHOUSE') }}
+      WAREHOUSE_SIZE = 'XSMALL'
+      AUTO_SUSPEND = 60
+      AUTO_RESUME = TRUE
+
+  # 2. Create Database
+  - id: create_database
+    type: io.kestra.plugin.jdbc.snowflake.Query
+    url: "jdbc:snowflake://qa76796.me-central-1.aws.snowflakecomputing.com/?warehouse={{ kv('SF_WAREHOUSE') }}"
+    username: "{{ secret('SNOWFLAKE_USERNAME') }}"
+    password: "{{ secret('SNOWFLAKE_PASSWORD') }}"
+    sql: CREATE DATABASE IF NOT EXISTS {{ kv('SF_DATABASE') }}
+
+  # 3. Create Schema
+  - id: create_schema
+    type: io.kestra.plugin.jdbc.snowflake.Query
+    url: "jdbc:snowflake://qa76796.me-central-1.aws.snowflakecomputing.com/?warehouse={{ kv('SF_WAREHOUSE') }}&db={{ kv('SF_DATABASE') }}"
+    username: "{{ secret('SNOWFLAKE_USERNAME') }}"
+    password: "{{ secret('SNOWFLAKE_PASSWORD') }}"
+    sql: CREATE SCHEMA IF NOT EXISTS {{ kv('SF_SCHEMA') }}

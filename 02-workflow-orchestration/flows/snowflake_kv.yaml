@@ -1,0 +1,33 @@
+id: 06_snowflake_kv
+namespace: zoomcamp
+
+tasks:
+  - id: sf_account
+    type: io.kestra.plugin.core.kv.Set
+    key: SF_ACCOUNT
+    kvType: STRING
+    value: "FJOOKLL-PG90504"   
+
+  - id: sf_warehouse
+    type: io.kestra.plugin.core.kv.Set
+    key: SF_WAREHOUSE
+    kvType: STRING
+    value: COMPUTE_WH
+
+  - id: sf_database
+    type: io.kestra.plugin.core.kv.Set
+    key: SF_DATABASE
+    kvType: STRING
+    value: ZOOMCAMP
+
+  - id: sf_schema
+    type: io.kestra.plugin.core.kv.Set
+    key: SF_SCHEMA
+    kvType: STRING
+    value: PUBLIC
+
+  - id: sf_role
+    type: io.kestra.plugin.core.kv.Set
+    key: SF_ROLE
+    kvType: STRING
+    value: SYSADMIN

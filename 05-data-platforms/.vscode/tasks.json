@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Bruin: Validate Pipeline",
+            "type": "shell",
+            "command": "bruin validate",
+            "options": {
+                "cwd": "${workspaceFolder}/bruin/zoomcamp/pipeline"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Bruin: Run Pipeline (1 day)",
+            "type": "shell",
+            "command": "bruin run --start-date 2023-01-01 --end-date 2023-01-02",
+            "options": {
+                "cwd": "${workspaceFolder}/bruin/zoomcamp/pipeline"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Bruin: Run Pipeline (full month)",
+            "type": "shell",
+            "command": "bruin run --start-date 2023-01-01 --end-date 2023-01-31",
+            "options": {
+                "cwd": "${workspaceFolder}/bruin/zoomcamp/pipeline"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Bruin: Run with specific taxi type",
+            "type": "shell",
+            "command": "bruin run --start-date 2023-01-01 --end-date 2023-01-02 --var '{\"taxi_types\": [\"yellow\"]}'",
+            "options": {
+                "cwd": "${workspaceFolder}/bruin/zoomcamp/pipeline"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
